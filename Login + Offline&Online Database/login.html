@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="login.css">
+    <title>Login Page</title>
+</head>
+<body>
+
+<form id="loginForm" onsubmit="return validateForm(event)">
+    <h2>Login</h2>
+    <input type="text" id="username" name="username" placeholder="Username" required>
+    <input type="password" id="password" name="password" placeholder="Password" required>
+    <input type="submit" value="Login">
+</form>
+
+<script>
+    function validateForm(event) {
+        event.preventDefault();
+
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        if (username === "root" && password === "root") {
+            alert("Welcome Root User !");
+            window.location.replace("index.html");
+            return false;
+        }
+        else {
+            if (username === "student" && password === "student") {
+                alert("Welcome Student User !");
+                window.location.replace("student.html");
+                return false;
+            }
+            else {
+                if(username === "" || password === "")
+                {
+                    alert("Complete all fields !");
+                    return false;
+                }
+                else{
+                    alert("Incorrect username or password.");
+                    return false;
+                }
+            }
+        }
+    }
+</script>
+</body>
+</html>

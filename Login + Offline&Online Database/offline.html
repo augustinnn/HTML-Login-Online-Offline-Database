@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offline Gradde Seaarch</title>
+<link rel="stylesheet" type="text/css" href="offline.css">
+</head>
+<body>
+<div class="container">
+    <h2>Student Database</h2>
+    <button onclick="loadData()">Load Data</button>
+    <table id="studentTable">
+        <tr>
+            <th>Name</th>
+            <th>Student ID</th>
+            <th>Grade</th>
+        </tr>
+    </table>
+    <div class="form-container">
+        <h3>Add New Student</h3>
+        <form id="addStudentForm">
+            <div class="input-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="input-group">
+                <label for="studentID">Student ID:</label>
+                <input type="text" id="studentID" required>
+            </div>
+            <div class="input-group">
+                <label for="grade">Grade:</label>
+                <input type="text" id="grade" required>
+            </div>
+            <button type="submit">Add Student</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function loadData() {
+        fetch('students.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1);
+            const table = document.getElementById('studentTable');
+            table.innerHTML = '<tr><th>Name</th><th>Student ID</th><th>Grade</th></tr>';
+            rows.forEach(row => {
+                const [name, studentID, grade] = row.split(',');
+                const newRow = table.insertRow();
+                newRow.innerHTML = `<td>${name}</td><td>${studentID}</td><td>${grade}</td>`;
+            });
+        });
+    }
+
+    document.getElementById('addStudentForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        addStudent();
+    });
+
+    function addStudent() {
+        const name = document.getElementById('name').value;
+        const studentID = document.getElementById('studentID').value;
+        const grade = document.getElementById('grade').value;
+        const data = { name, studentID, grade };
+
+        fetch('student.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert('Student added successfully.');
+                loadData(); 
+            } else {
+                alert('Failed to add student.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to add student.');
+        });
+        
+        document.getElementById('addStudentForm').reset();
+    }
+</script>
+</body>
+</html>
